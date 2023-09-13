@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 @Table(name = "user")
 @Entity
 public class User {
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String userName;
+	@Id @GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
+	// private String userName;
 	private String name;
 	private String password;
 	private String email;
