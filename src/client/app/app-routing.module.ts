@@ -1,16 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from '../pages/login/login.component';
-import { UserPageComponent } from '../pages/user-page/user-page.component';
 
 const routes: Routes = [
   {
     path: 'login',
-    component: LoginComponent,
+    loadComponent: () => import('../pages/login/login.component').then(c => c.LoginComponent)
   },
   {
     path: 'my-page',
-    component: UserPageComponent
+    loadComponent: () => import('../pages/user-page/user-page.component').then(c => c.UserPageComponent)
+  },
+  {
+    path: 'my-cats',
+    loadComponent: () => import('../pages/cats/cats.component').then(c => c.CatsPageComponent)
   }
 ];
 

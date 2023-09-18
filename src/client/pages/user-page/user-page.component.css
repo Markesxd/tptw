@@ -1,14 +1,3 @@
-.user-page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.3rem;
-}
-
-.user-page-title {
-    font-size: 1.7rem;
-}
-
 .user-page-content {
     margin-top: 1rem;
     display: flex;

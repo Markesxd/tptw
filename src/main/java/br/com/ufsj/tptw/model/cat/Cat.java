@@ -11,9 +11,22 @@ public class Cat {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String name;
+
+  public String getName() {
+    return name;
+  }
+
+  public Date getBirthday() {
+    return birthday;
+  }
+
+  public String getGender() {
+    return gender;
+  }
+
+  private String name;
 	private Date birthday;
-	private CatGender gender;
-	@ManyToOne
-	private House house;
+	private String gender;
+//	@ManyToOne
+//	private House house;
 }
