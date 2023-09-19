@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Cat, ICat } from 'src/client/model/Cat';
-import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-modal',
@@ -25,8 +24,7 @@ export class ModalComponent {
   })
 
   constructor(
-    protected fb: FormBuilder,
-    private api: ApiService
+    protected fb: FormBuilder
   ) {}
 
   close(cat?: ICat): void {

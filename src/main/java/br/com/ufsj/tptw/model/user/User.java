@@ -12,8 +12,15 @@ public class User {
 	private String password;
 	private String email;
 
+  public UUID getId() {
+    return id;
+  }
 
-	public void setPassword(String password) {
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
 		this.password = password;
 	}
 

@@ -2,7 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ModalComponent } from 'src/client/app/components/modal/modal.component';
-import { ApiService } from 'src/client/app/services/api.service';
+import { CatService } from 'src/client/app/services/cat.service';
 import { ICat } from 'src/client/model/Cat';
 
 @Component({
@@ -34,7 +34,7 @@ export class CatsPageComponent implements OnInit {
   private _currentCard = 0;
 
   constructor(
-    private api: ApiService
+    private catService: CatService
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +56,7 @@ export class CatsPageComponent implements OnInit {
   closeModal(cat?: ICat): void {
     this.showModal = false;
     if(cat){
-      this.api.post('cat', cat).subscribe(res => {
+      this.catService.post(cat).subscribe(res => {
         if(res.ok){
           this.pets.push(cat);
         }
@@ -91,10 +91,8 @@ export class CatsPageComponent implements OnInit {
     return `${yearDif} anos`;
   }
 
-
-
   private load(): void {
-    this.api.get('cat').subscribe(res => {
+    this.catService.get().subscribe(res => {
       if(!res){
         return;
       }

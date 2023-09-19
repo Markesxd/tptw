@@ -1,5 +1,5 @@
 CREATE TABLE user (
-    id varchar(32),
+    id varbinary(36),
     name varchar(100) NOT NULL,
     password varchar(100) NOT NULL,
     email varchar(100) NOT NULL,
