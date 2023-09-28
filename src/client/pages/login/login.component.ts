@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { catchError, map } from 'rxjs';
 import { UserService } from 'src/client/app/services/user.service';
-import { User } from 'src/client/model/User';
+import { User } from 'src/client/model/User.model';
 
 @Component({
   selector: 'login',
@@ -25,7 +27,9 @@ export class LoginComponent {
 
   constructor (
     protected fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private cookieService: CookieService,
+    private router: Router
   ) {}
 
   get emailErrors(): ValidationErrors | null | undefined {
@@ -55,7 +59,8 @@ export class LoginComponent {
       throw err;
     }))
     .subscribe(response => {
-      console.log(response);
+      this.cookieService.set('id', response, 1);
+      this.router.navigate(['my-page']);
     })
   }
 }

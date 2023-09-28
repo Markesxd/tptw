@@ -1,9 +1,12 @@
 package br.com.ufsj.tptw.model.cat;
 
-import java.util.Date;
+import br.com.ufsj.tptw.model.user.User;
 
-public record CatDataOutput(String name, Date birthday, String gender) {
+import java.util.Date;
+import java.util.UUID;
+
+public record CatDataOutput(Long id, String name, Date birthday, String gender) {
   public CatDataOutput(Cat cat) {
-    this(cat.getName(), cat.getBirthday(), cat.getGender());
+    this(cat.getId(), cat.getName(), cat.getBirthday(), cat.getGender());
   }
 }

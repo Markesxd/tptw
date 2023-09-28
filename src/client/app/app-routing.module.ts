@@ -13,6 +13,10 @@ const routes: Routes = [
   {
     path: 'my-cats',
     loadComponent: () => import('../pages/cats/cats.component').then(c => c.CatsPageComponent)
+  },
+  {
+    path: 'food',
+    loadComponent: () => import('../pages/food/food.component').then(c => c.FoodComponent)
   }
 ];
 

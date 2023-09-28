@@ -4,7 +4,6 @@
 
 .card {
     width: 70vw;
-    height: 200px;
     display: flex;
     margin: 2rem auto;
     flex-direction: column;
@@ -34,7 +33,6 @@
 .card-img {
     margin: 2rem;
     width: 50%;
-
 }
 
 .cats-page-content {
@@ -51,14 +49,14 @@
 .arrow-left {
     position: absolute;
     left: 10px;
-    top: 100px;
+    top: 42%;
     transform: rotate(180deg);
 }
 
 .arrow-right {
     position: absolute;
     right: 10px;
-    top: 100px;
+    top: 42%;
 }
 
 .bubbles {

@@ -1,9 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { ModalComponent } from 'src/client/app/components/modal/modal.component';
 import { CatService } from 'src/client/app/services/cat.service';
-import { ICat } from 'src/client/model/Cat';
+import { UserService } from 'src/client/app/services/user.service';
+import { ICat } from 'src/client/model/Cat.model';
 
 @Component({
   selector: 'cats-page',
@@ -32,12 +35,20 @@ export class CatsPageComponent implements OnInit {
   direction = 'right';
   showModal = false;
   private _currentCard = 0;
+  private _id = '';
 
   constructor(
-    private catService: CatService
+    private catService: CatService,
+    private cookieService: CookieService,
+    private userService: UserService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    this._id = this.cookieService.get('id');
+    if(this._id === '') {
+      this.router.navigate(['']);
+    }
     this.load();
   }
 
@@ -92,11 +103,8 @@ export class CatsPageComponent implements OnInit {
   }
 
   private load(): void {
-    this.catService.get().subscribe(res => {
-      if(!res){
-        return;
-      }
-      this.pets = res.content as ICat[];
+    this.userService.getCats(this._id).subscribe(res => {
+      this.pets = res;
     });
   }
 }

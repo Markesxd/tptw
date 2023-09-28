@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import { Observable, map } from "rxjs";
-import { ICat } from "src/client/model/Cat";
-import { NumberSymbol } from "@angular/common";
-import { IPageableResponse } from "./Pageable.model";
+import { ICat } from "src/client/model/Cat.model";
+import { IPageableResponse } from "../../model/Pageable.model";
 
 @Injectable({
     providedIn: 'root'

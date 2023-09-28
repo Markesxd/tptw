@@ -3,5 +3,7 @@ CREATE TABLE cats (
 	name varchar(100) NOT NULL,
 	birthday DATE,
 	gender varchar(10),
-	PRIMARY KEY(id)
+	user_id varbinary(36) NOT NULL,
+	PRIMARY KEY(id),
+	FOREIGN KEY(user_id) REFERENCES users(id)
 )

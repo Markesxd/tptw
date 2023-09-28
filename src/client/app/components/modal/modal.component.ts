@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Cat, ICat } from 'src/client/model/Cat';
+import { CookieService } from 'ngx-cookie-service';
+import { Cat, ICat } from 'src/client/model/Cat.model';
+import { User } from 'src/client/model/User.model';
 
 @Component({
   selector: 'app-modal',
@@ -24,7 +26,8 @@ export class ModalComponent {
   })
 
   constructor(
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    private cookieService: CookieService
   ) {}
 
   close(cat?: ICat): void {
@@ -36,7 +39,9 @@ export class ModalComponent {
 
   onSubmit():void {
     const cat = new Cat();
-    cat.createFromForm(this.editForm);
+    const owner = new User;
+    owner.id = this.cookieService.get('id');
+    cat.createFromForm(this.editForm, owner);
     this.close(cat);
   }
 }

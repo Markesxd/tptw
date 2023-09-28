@@ -1,10 +1,12 @@
 import { FormGroup } from "@angular/forms";
+import { IUser } from "./User.model";
 
 export interface ICat {
     id?: number;
     name?: string;
     birthday?: Date;
     gender?: TypeGender;
+    owner?: IUser;
     pic?: string;
 }
 
@@ -18,12 +20,14 @@ export class Cat implements ICat {
     name?: string;
     birthday?: Date;
     gender?: TypeGender;
+    owner?: IUser;
     pic?: string;
     
-    public createFromForm(formGroup: FormGroup): Cat {
+    public createFromForm(formGroup: FormGroup, owner: IUser): Cat {
         this.name = formGroup.get('name')?.value;
         this.birthday = formGroup.get('birthday')?.value;
         this.gender = formGroup.get('gender')?.value;
+        this.owner = owner;
         return this;
     }
 }

@@ -1,4 +1,4 @@
-CREATE TABLE user (
+CREATE TABLE users (
     id varbinary(36),
     name varchar(100) NOT NULL,
     password varchar(100) NOT NULL,

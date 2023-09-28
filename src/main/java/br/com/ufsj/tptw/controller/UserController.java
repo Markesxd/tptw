@@ -1,5 +1,7 @@
 package br.com.ufsj.tptw.controller;
 
+import br.com.ufsj.tptw.model.plan.PlanHelper;
+import br.com.ufsj.tptw.model.plan.PlanOutputData;
 import br.com.ufsj.tptw.model.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -35,6 +38,33 @@ public class UserController {
       return match.getId();
     } catch (NoSuchElementException exception) {
       throw  new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Failed to Login", exception);
+    }
+  }
+
+  @GetMapping("/{id}")
+  public UserDataOutput fetch(@PathVariable UUID id) {
+    try {
+      return repository.findById(id).map(UserDataOutput::new).orElseThrow();
+    } catch (NoSuchElementException exception) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found", exception);
+    }
+  }
+  @GetMapping("/{id}/cats")
+  public UserCatsDataOutput fetchCats(@PathVariable UUID id) {
+    try {
+      return repository.findById(id).map(UserCatsDataOutput::new).orElseThrow();
+    } catch (NoSuchElementException exception) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found", exception);
+    }
+  }
+
+  @GetMapping("/{id}/plans")
+  public Set<PlanOutputData> fetchPlans(@PathVariable UUID id) {
+    try {
+      User user = repository.findById(id).orElseThrow();
+      return PlanHelper.serializePlans(user.getPlans());
+    } catch (NoSuchElementException exception) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found", exception);
     }
   }
 }

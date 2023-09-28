@@ -1,9 +1,16 @@
 package br.com.ufsj.tptw.model.user;
+import br.com.ufsj.tptw.model.cat.Cat;
+import br.com.ufsj.tptw.model.cat.CatDataOutput;
+import br.com.ufsj.tptw.model.plan.Plan;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
-@Table(name = "user")
+@Table(name = "users")
 @Entity
 public class User {
 	@Id @GeneratedValue(strategy = GenerationType.UUID)
@@ -11,9 +18,26 @@ public class User {
 	private String name;
 	private String password;
 	private String email;
+  @JsonIgnore
+  @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+  private Set<Cat> cats = new HashSet<Cat>();
+  @JsonIgnore
+  @OneToMany(mappedBy = "user")
+  private Set<Plan> plans;
 
-  public UUID getId() {
+  public Set<Plan> getPlans() {
+    return plans;
+  }
+
+  public Set<Cat> getCats() {
+    return cats;
+  }
+public UUID getId() {
     return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
   }
 
   public String getPassword() {
