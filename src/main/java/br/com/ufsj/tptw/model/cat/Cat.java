@@ -1,5 +1,6 @@
 package br.com.ufsj.tptw.model.cat;
 
+import br.com.ufsj.tptw.model.healthEvent.HealthEvent;
 import br.com.ufsj.tptw.model.house.House;
 import br.com.ufsj.tptw.model.plan.Plan;
 import br.com.ufsj.tptw.model.user.User;
@@ -24,6 +25,8 @@ public class Cat {
   @ManyToOne
   @JoinColumn(name = "plan_id")
   private Plan plan;
+  @ManyToMany
+  private Set<HealthEvent> events;
 
   public Cat setPlan(Plan plan) {
     this.plan = plan;

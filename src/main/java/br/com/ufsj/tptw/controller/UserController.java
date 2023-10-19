@@ -1,5 +1,8 @@
 package br.com.ufsj.tptw.controller;
 
+import br.com.ufsj.tptw.model.healthEvent.HealthEvent;
+import br.com.ufsj.tptw.model.healthEvent.HealthEventDataOutput;
+import br.com.ufsj.tptw.model.healthEvent.HealthEventRepository;
 import br.com.ufsj.tptw.model.plan.PlanHelper;
 import br.com.ufsj.tptw.model.plan.PlanOutputData;
 import br.com.ufsj.tptw.model.user.*;
@@ -21,6 +24,9 @@ import java.util.UUID;
 public class UserController {
 	@Autowired
 	private UserRepository repository;
+  @Autowired
+  private HealthEventRepository healthEventRepository;
+
 	@GetMapping
 	public Page<UserDataOutput> fetchAll(@PageableDefault(sort = {"id"})Pageable pagination) {
 		return repository.findAll(pagination).map(UserDataOutput::new);
@@ -65,6 +71,16 @@ public class UserController {
       return PlanHelper.serializePlans(user.getPlans());
     } catch (NoSuchElementException exception) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found", exception);
+    }
+  }
+
+  @GetMapping("/{id}/health-events")
+  public Set<HealthEventDataOutput> fetchHealthEvents(@PathVariable UUID id) {
+    try {
+      User user = repository.findById(id).orElseThrow();
+      return HealthEventHelper.serializeHealthEvent(user.getHealthEvents());
+    } catch (NoSuchElementException exception) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", exception);
     }
   }
 }

@@ -4,6 +4,7 @@ import { Observable, map } from "rxjs";
 import { ICat } from "src/client/model/Cat.model";
 import { IPlan } from "src/client/model/Plan.model";
 import { IUser } from "src/client/model/User.model";
+import { IHealthEvent } from "src/client/model/healthEvent.model";
 
 interface ICatsResponse {
     cats?: ICat[]
@@ -38,7 +39,7 @@ export class UserService {
         return this.http.get(`${this.baseUrl}/${id}/cats`, {
             observe: 'response'
         }).pipe(map((res: HttpResponse<ICatsResponse>) => {
-            return res.body!.cats ?? []; 
+            return res.body?.cats ?? []; 
         }))
     }
 
@@ -46,5 +47,17 @@ export class UserService {
         return this.http.get(`${this.baseUrl}/${id}/plans`, {
             observe: 'response'
         }).pipe(map(res => res.body as IPlan[] ?? []))
+    }
+
+    getHealthEvents(id: string): Observable<IHealthEvent[]>{
+        return this.http.get(`${this.baseUrl}/${id}/health-events`, {
+            observe: 'response'
+        }).pipe(map(res => {
+            const events = res.body as IHealthEvent[] ?? []
+            return events.map(event => {
+                event.date = new Date(event.date ?? '');
+                return event;
+            });
+        }));
     }
 }

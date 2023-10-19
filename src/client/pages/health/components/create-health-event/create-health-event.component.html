@@ -1,0 +1,29 @@
+<div class="overlay" *ngIf="show" (click)="close()">
+    <div class="modal-body" (click)="$event.stopPropagation()">
+        <h3 class="form-title">Novo Plano</h3>
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+            <div>
+                <label class="form-label" for="name">Nome</label>
+                <input type="text" id="name" formControlName="name">
+            </div>
+            <div>
+                <label class="form-label" for="date">Data</label>
+                <input type="date" id="date" formControlName="date">
+            </div>
+            <div>
+                <label class="form-label" for="repeat">Intervalo de Repetição</label>
+                <select formControlName="repeatInterval" id="repeat">
+                    <option *ngFor="let value of repeatIntervalValues" [value]="value">{{value | FormatRepeatInterval}}</option>
+                </select>
+            </div>
+            <div>
+                <label for="cats" class="form-label">gatos</label>
+                <div *ngFor="let cat of cats; let i = index">
+                    <input (change)="onChangeCat($event)" type="checkbox" id="{{cat.name}}i" [value]="cat.id">
+                    <label for="{{cat.name}}i">{{cat.name}}</label>
+                </div>
+            </div>
+            <button class="form-buttom" type="submit">Cadastrar</button>
+        </form>
+    </div>
+</div>

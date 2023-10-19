@@ -17,6 +17,10 @@ const routes: Routes = [
   {
     path: 'food',
     loadComponent: () => import('../pages/food/food.component').then(c => c.FoodComponent)
+  },
+  {
+    path: 'health',
+    loadComponent: () => import('../pages/health/health.component').then(c => c.HealthComponent)
   }
 ];
 

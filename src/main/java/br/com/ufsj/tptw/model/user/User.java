@@ -1,6 +1,7 @@
 package br.com.ufsj.tptw.model.user;
 import br.com.ufsj.tptw.model.cat.Cat;
 import br.com.ufsj.tptw.model.cat.CatDataOutput;
+import br.com.ufsj.tptw.model.healthEvent.HealthEvent;
 import br.com.ufsj.tptw.model.plan.Plan;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -24,6 +25,18 @@ public class User {
   @JsonIgnore
   @OneToMany(mappedBy = "user")
   private Set<Plan> plans;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user")
+  private Set<HealthEvent> healthEvents;
+
+  public Set<HealthEvent> getHealthEvents() {
+    return healthEvents;
+  }
+
+  public void setHealthEvents(Set<HealthEvent> healthEvents) {
+    this.healthEvents = healthEvents;
+  }
 
   public Set<Plan> getPlans() {
     return plans;
