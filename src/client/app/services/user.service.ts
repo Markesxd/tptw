@@ -5,6 +5,7 @@ import { ICat } from "src/client/model/Cat.model";
 import { IPlan } from "src/client/model/Plan.model";
 import { IUser } from "src/client/model/User.model";
 import { IHealthEvent } from "src/client/model/healthEvent.model";
+import { ISandbox } from "src/client/model/sandbox.model";
 
 interface ICatsResponse {
     cats?: ICat[]
@@ -59,5 +60,17 @@ export class UserService {
                 return event;
             });
         }));
+    }
+
+    getSandBoxes(id: string): Observable<ISandbox[]> {
+        return this.http.get(`${this.baseUrl}/${id}/sandboxes`, {observe: 'response'}).pipe(map(
+            res => {
+                const sandboxes = res.body as ISandbox[] ?? [];
+                return sandboxes.map(sandbox => {
+                    sandbox.cleanDate = new Date(sandbox.cleanDate ?? '');
+                    return sandbox;
+                })
+            }
+        ))
     }
 }

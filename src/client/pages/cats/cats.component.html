@@ -6,7 +6,7 @@
     <div class="cards">
         <ng-container *ngFor="let pet of pets; let i = index">
             <div *ngIf="i === currentCard" class="card" [@cardsAnimation]="direction">
-                <div class="card-header">
+                <div class="card--header">
                     <div>
                         <h3 class="card-title">{{pet.name}}</h3>
                         <span class="card-faded-text">{{getCatAge(pet)}}</span>

@@ -23,6 +23,22 @@ p {
     font-size: 1.7rem;
 }
 
+.form-buttom {
+    display: block;
+    margin: 0 auto;
+    margin-top: 1rem;
+    border: 1px solid black;
+    border-radius: 0.5rem;
+    background-color: white;
+    padding: 0.5rem 2.5rem;
+}
+
+.form-title {
+    font-size: 1.5rem;
+    width: 100%;
+    border-bottom: 1px solid black;
+    margin-bottom: 1rem;
+}
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126

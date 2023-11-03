@@ -3,6 +3,7 @@ import br.com.ufsj.tptw.model.cat.Cat;
 import br.com.ufsj.tptw.model.cat.CatDataOutput;
 import br.com.ufsj.tptw.model.healthEvent.HealthEvent;
 import br.com.ufsj.tptw.model.plan.Plan;
+import br.com.ufsj.tptw.model.sandbox.Sandbox;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -29,6 +30,18 @@ public class User {
   @JsonIgnore
   @OneToMany(mappedBy = "user")
   private Set<HealthEvent> healthEvents;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user")
+  private Set<Sandbox> sandboxes;
+
+  public Set<Sandbox> getSandboxes() {
+    return sandboxes;
+  }
+
+  public void setSandboxes(Set<Sandbox> sandboxes) {
+    this.sandboxes = sandboxes;
+  }
 
   public Set<HealthEvent> getHealthEvents() {
     return healthEvents;

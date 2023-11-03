@@ -5,6 +5,8 @@ import br.com.ufsj.tptw.model.healthEvent.HealthEventDataOutput;
 import br.com.ufsj.tptw.model.healthEvent.HealthEventRepository;
 import br.com.ufsj.tptw.model.plan.PlanHelper;
 import br.com.ufsj.tptw.model.plan.PlanOutputData;
+import br.com.ufsj.tptw.model.sandbox.Sandbox;
+import br.com.ufsj.tptw.model.sandbox.SandboxDataOutput;
 import br.com.ufsj.tptw.model.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +29,8 @@ public class UserController {
 	private UserRepository repository;
   @Autowired
   private HealthEventRepository healthEventRepository;
+
+
 
 	@GetMapping
 	public Page<UserDataOutput> fetchAll(@PageableDefault(sort = {"id"})Pageable pagination) {
@@ -55,6 +60,7 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found", exception);
     }
   }
+
   @GetMapping("/{id}/cats")
   public UserCatsDataOutput fetchCats(@PathVariable UUID id) {
     try {
@@ -81,6 +87,21 @@ public class UserController {
       return HealthEventHelper.serializeHealthEvent(user.getHealthEvents());
     } catch (NoSuchElementException exception) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", exception);
+    }
+  }
+
+  @GetMapping("{id}/sandboxes")
+  public Set<SandboxDataOutput> fetchSandboxes(@PathVariable UUID id) {
+    try {
+      return repository.findById(id).map(_user -> {
+        Set<SandboxDataOutput> sandboxes = new HashSet<>();
+        _user.getSandboxes().forEach(_sandbox -> {
+          sandboxes.add(new SandboxDataOutput(_sandbox));
+        });
+          return sandboxes;
+      }).orElseThrow();
+    } catch (NoSuchElementException e) {
+      return new HashSet<>();
     }
   }
 }

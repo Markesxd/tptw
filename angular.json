@@ -25,6 +25,7 @@
               "src/client/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/client/styles.css"
             ],
             "scripts": []

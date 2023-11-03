@@ -5,7 +5,7 @@
     </div>
     <div>
         <ng-container *ngFor="let plan of plans; let i = index">
-            <div class="card" *ngIf="currentCard == i">
+            <div class="card gap-2" *ngIf="currentCard == i">
                 <h3 class="card-title">{{plan.name}}</h3>
                 <div class="card-field" *ngFor="let meal of plan.meals">
                     <input class="card-checkbox" type="checkbox" id="{{meal.id}}" >
