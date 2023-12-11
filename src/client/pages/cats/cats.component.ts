@@ -2,7 +2,9 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
+import { CreateCatComponent } from 'src/client/app/components/create-cat/create-cat.component';
 import { ModalComponent } from 'src/client/app/components/modal/modal.component';
 import { CatService } from 'src/client/app/services/cat.service';
 import { UserService } from 'src/client/app/services/user.service';
@@ -33,7 +35,6 @@ export class CatsPageComponent implements OnInit {
   pets: ICat[] = [];
 
   direction = 'right';
-  showModal = false;
   private _currentCard = 0;
   private _id = '';
 
@@ -41,7 +42,8 @@ export class CatsPageComponent implements OnInit {
     private catService: CatService,
     private cookieService: CookieService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -61,18 +63,14 @@ export class CatsPageComponent implements OnInit {
   }
 
   openModal(): void {
-    this.showModal = true;
-  }
-
-  closeModal(cat?: ICat): void {
-    this.showModal = false;
-    if(cat){
+    const ref = this.modalService.open(CreateCatComponent, {centered: true});
+    ref.closed.subscribe((cat: ICat) => {
       this.catService.post(cat).subscribe(res => {
         if(res.ok){
           this.pets.push(cat);
         }
-      })
-    }
+      });
+    })
   }
 
   set currentCard(i: number) {

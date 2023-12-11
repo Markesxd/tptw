@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { UserService } from 'src/client/app/services/user.service';
 import { ICat } from 'src/client/model/Cat.model';
@@ -33,7 +34,8 @@ export class CreatePlanComponent {
   constructor(
     protected fb: FormBuilder,
     private cookieService: CookieService,
-    private userService: UserService
+    private userService: UserService,
+    private activeModal: NgbActiveModal
   ) {}
 
     ngOnInit():void {
@@ -87,7 +89,7 @@ export class CreatePlanComponent {
     user.id = this.cookieService.get("id");
     plan.user = user;
     plan.createFromForm(this.editForm);
-    this.close(plan);
+    this.activeModal.close(plan);
   }
 
   get meals(): string[] {

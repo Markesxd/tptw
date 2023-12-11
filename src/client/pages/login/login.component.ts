@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { catchError, map } from 'rxjs';
 import { UserService } from 'src/client/app/services/user.service';
@@ -59,7 +60,11 @@ export class LoginComponent {
       throw err;
     }))
     .subscribe(response => {
-      this.cookieService.set('id', response, 1);
+        const decoded = jwtDecode(response.token) as any;
+
+      
+      this.cookieService.set('id', decoded.id, 1);
+      this.cookieService.set('token', response.token, 1);
       this.router.navigate(['my-page']);
     })
   }

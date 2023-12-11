@@ -30,4 +30,9 @@ export class UserPageComponent implements OnInit{
       this.user = user;
     });
   }
+
+  logout(): void {
+    this.cookieService.delete('id');
+    this.router.navigate(['/']);
+  }
 }

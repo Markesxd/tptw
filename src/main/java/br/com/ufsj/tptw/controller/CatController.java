@@ -1,9 +1,9 @@
 package br.com.ufsj.tptw.controller;
 
-import br.com.ufsj.tptw.model.cat.Cat;
-import br.com.ufsj.tptw.model.cat.CatDTO;
-import br.com.ufsj.tptw.model.cat.CatDataOutput;
-import br.com.ufsj.tptw.model.cat.CatRepository;
+import br.com.ufsj.tptw.dto.CatDTO;
+import br.com.ufsj.tptw.dto.CatDataOutput;
+import br.com.ufsj.tptw.repository.CatRepository;
+import br.com.ufsj.tptw.service.CatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,22 +18,22 @@ import java.util.NoSuchElementException;
 @RequestMapping("/cat")
 public class CatController {
   @Autowired
-  private CatRepository repository;
+  private CatService catService;
 
   @GetMapping
   public Page<CatDataOutput> fetchAll(@PageableDefault(sort = "id")Pageable pageable) {
-    return repository.findAll(pageable).map(CatDataOutput::new);
+    return catService.findAll(pageable);
   }
 
   @PostMapping
-  public void create(@RequestBody Cat cat) {
-    repository.save(cat);
+  public void create(@RequestBody CatDTO cat) {
+    catService.createCat(cat);
   }
 
   @GetMapping("/{id}")
   public CatDTO get(@PathVariable Long id) {
     try {
-      return repository.findById(id).map(CatDTO::new).orElseThrow();
+      return catService.findById(id);
     } catch (NoSuchElementException exp) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found", exp);
     }

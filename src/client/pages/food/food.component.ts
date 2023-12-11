@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CreatePlanComponent } from './components/create-plan/create-plan.component';
 import { IPlan } from 'src/client/model/Plan.model';
 import { PlanService } from 'src/client/app/services/plan.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-food',
@@ -16,8 +17,6 @@ import { PlanService } from 'src/client/app/services/plan.service';
 })
 export class FoodComponent implements OnInit {
 
-  showModal = false;
-
   plans: IPlan[] = [];
   private _currentCard = 0;
 
@@ -25,7 +24,8 @@ export class FoodComponent implements OnInit {
     private userService: UserService,
     private cookieService: CookieService,
     private planService: PlanService,
-    private router: Router
+    private router: Router,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -40,7 +40,12 @@ export class FoodComponent implements OnInit {
   }
 
   openModal():void {
-    this.showModal = true;
+    const ref = this.modalService.open(CreatePlanComponent, {centered: true});
+    ref.closed.subscribe(plan => {
+      this.planService.post(plan).subscribe(() => {
+        this.plans.push(plan);
+      });
+    });
   }
 
   onPreviousCard(): void {
@@ -49,15 +54,6 @@ export class FoodComponent implements OnInit {
 
   onNextCard(): void {
     this.currentCard++;
-  }
-
-  handleModalClose(plan?: IPlan): void {
-    if(plan){
-      this.planService.post(plan).subscribe(() => {
-        this.plans.push(plan);
-      });
-    }
-    this.showModal = false;
   }
 
   get currentCard(): number {

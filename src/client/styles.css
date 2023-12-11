@@ -33,6 +33,10 @@ p {
     padding: 0.5rem 2.5rem;
 }
 
+.form-buttom:disabled {
+    border-color: #1010104D;
+}
+
 .form-title {
     font-size: 1.5rem;
     width: 100%;

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { FormatRepeatInterval } from 'src/client/app/Pipes/FormatRepeatInterval.pipe';
 import { UserService } from 'src/client/app/services/user.service';
@@ -16,11 +17,7 @@ import { HealthEvent, IHealthEvent, ReapeatInterval } from 'src/client/model/hea
   standalone: true
 })
 export class CreateHealthEventComponent {
-  @Input()
-  show = true;
-
   @Output()
-  onClose = new EventEmitter<IHealthEvent | undefined>();
 
   repeatIntervalValues = (Object.values(ReapeatInterval) as ReapeatInterval[]).filter(o => !isNaN(o));
 
@@ -36,7 +33,8 @@ export class CreateHealthEventComponent {
   constructor(
     protected fb: FormBuilder,
     private cookieService: CookieService,
-    private userService: UserService
+    private userService: UserService,
+    private activeModal: NgbActiveModal
   ) {}
 
   ngOnInit():void {
@@ -44,14 +42,6 @@ export class CreateHealthEventComponent {
     this.userService.getCats(id).subscribe(cats => {
       this.cats = cats;
     })
-  }
-
-  close(healthEvent?: IHealthEvent): void {
-    this.editForm.get('name')?.patchValue('');
-    this.editForm.get('date')?.patchValue(new Date);
-    this.editForm.get('repeatInterval')?.patchValue(ReapeatInterval.NO_REPEAT);
-    this.editForm.get('cats')?.patchValue([]);
-    this.onClose.emit(healthEvent);
   }
 
   onChangeCat(event: Event): void {
@@ -71,13 +61,13 @@ export class CreateHealthEventComponent {
     }
   }
 
-  onSubmit():void {
+  onSubmit(): void {
     const healthEvent = new HealthEvent;
     const user = new User;
     user.id = this.cookieService.get("id");
     healthEvent.user = user;
     healthEvent.createFromForm(this.editForm);
-    this.close(healthEvent);
+    this.activeModal.close(healthEvent);
   }
 
   get formCats(): ICat[] {

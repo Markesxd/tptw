@@ -1,11 +1,13 @@
 package br.com.ufsj.tptw.controller;
 
-import br.com.ufsj.tptw.model.cat.Cat;
-import br.com.ufsj.tptw.model.cat.CatRepository;
-import br.com.ufsj.tptw.model.plan.Plan;
-import br.com.ufsj.tptw.model.plan.PlanOutputData;
-import br.com.ufsj.tptw.model.plan.PlanRepository;
-import br.com.ufsj.tptw.model.plan.meal.MealRepository;
+import br.com.ufsj.tptw.dto.PlanInputDataDTO;
+import br.com.ufsj.tptw.model.Cat;
+import br.com.ufsj.tptw.repository.CatRepository;
+import br.com.ufsj.tptw.model.Plan;
+import br.com.ufsj.tptw.dto.PlanOutputData;
+import br.com.ufsj.tptw.repository.PlanRepository;
+import br.com.ufsj.tptw.repository.MealRepository;
+import br.com.ufsj.tptw.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,33 +20,15 @@ import java.util.Optional;
 @RequestMapping("plan")
 public class PlanController {
   @Autowired
-  private PlanRepository planRepository;
-  @Autowired
-  private MealRepository mealRepository;
-  @Autowired
-  private CatRepository catRepository;
+  private PlanService planService;
 
   @PostMapping
-  public void postPlan(@RequestBody Plan plan) {
-    planRepository.save(plan);
-      plan.getMeals()
-        .forEach(meal -> {
-          meal.setPlan(plan);
-          mealRepository.save(meal);
-        });
-    plan.getCats()
-      .forEach(cat -> {
-      Optional<Cat> repoCat = catRepository.findById(cat.getId());
-      if(repoCat.isPresent()) {
-        catRepository.save(
-          repoCat.get().setPlan(plan)
-        );
-      }
-    });
+  public void postPlan(@RequestBody PlanInputDataDTO plan) {
+    planService.create(plan);
   }
 
   @GetMapping
   public Page<PlanOutputData> getPlans(@PageableDefault Pageable pagination) {
-    return planRepository.findAll(pagination).map(PlanOutputData::new);
+    return planService.findAll(pagination);
   }
 }

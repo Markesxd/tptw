@@ -1,15 +1,13 @@
 package br.com.ufsj.tptw.controller;
 
-import br.com.ufsj.tptw.model.healthEvent.HealthEvent;
-import br.com.ufsj.tptw.model.healthEvent.HealthEventDataOutput;
-import br.com.ufsj.tptw.model.healthEvent.HealthEventRepository;
-import br.com.ufsj.tptw.model.plan.PlanHelper;
-import br.com.ufsj.tptw.model.plan.PlanOutputData;
-import br.com.ufsj.tptw.model.sandbox.Sandbox;
-import br.com.ufsj.tptw.model.sandbox.SandboxDataOutput;
-import br.com.ufsj.tptw.model.user.*;
+import br.com.ufsj.tptw.dto.*;
+import br.com.ufsj.tptw.helper.HealthEventHelper;
+import br.com.ufsj.tptw.model.User;
+import br.com.ufsj.tptw.repository.HealthEventRepository;
+import br.com.ufsj.tptw.helper.PlanHelper;
+import br.com.ufsj.tptw.repository.UserRepository;
+import br.com.ufsj.tptw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -29,79 +27,47 @@ public class UserController {
 	private UserRepository repository;
   @Autowired
   private HealthEventRepository healthEventRepository;
-
+  @Autowired
+  private UserService userService;
 
 
 	@GetMapping
 	public Page<UserDataOutput> fetchAll(@PageableDefault(sort = {"id"})Pageable pagination) {
-		return repository.findAll(pagination).map(UserDataOutput::new);
-	}
+    return userService.getAll(pagination);
+  }
 
 	@PostMapping
-	public void create(@RequestBody User user) {
-		repository.save(user);
+	public void create(@RequestBody UserInputDTO user) {
+		userService.create(user);
 	}
 
   @PostMapping("/login")
-  public UUID login(@RequestBody User user) {
-    try {
-      User match = repository.findOne(Example.of(user)).orElseThrow();
-      return match.getId();
-    } catch (NoSuchElementException exception) {
-      throw  new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Failed to Login", exception);
-    }
+  public UUID login(@RequestBody UserLoginDTO user) {
+    return userService.login(user);
   }
 
   @GetMapping("/{id}")
   public UserDataOutput fetch(@PathVariable UUID id) {
-    try {
-      return repository.findById(id).map(UserDataOutput::new).orElseThrow();
-    } catch (NoSuchElementException exception) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found", exception);
-    }
+    return userService.getOne(id);
   }
 
   @GetMapping("/{id}/cats")
   public UserCatsDataOutput fetchCats(@PathVariable UUID id) {
-    try {
-      return repository.findById(id).map(UserCatsDataOutput::new).orElseThrow();
-    } catch (NoSuchElementException exception) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found", exception);
-    }
+    return userService.getCats(id);
   }
 
   @GetMapping("/{id}/plans")
   public Set<PlanOutputData> fetchPlans(@PathVariable UUID id) {
-    try {
-      User user = repository.findById(id).orElseThrow();
-      return PlanHelper.serializePlans(user.getPlans());
-    } catch (NoSuchElementException exception) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found", exception);
-    }
+    return userService.getPlans(id);
   }
 
   @GetMapping("/{id}/health-events")
   public Set<HealthEventDataOutput> fetchHealthEvents(@PathVariable UUID id) {
-    try {
-      User user = repository.findById(id).orElseThrow();
-      return HealthEventHelper.serializeHealthEvent(user.getHealthEvents());
-    } catch (NoSuchElementException exception) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", exception);
-    }
+    return userService.getHealthEvents(id);
   }
 
   @GetMapping("{id}/sandboxes")
   public Set<SandboxDataOutput> fetchSandboxes(@PathVariable UUID id) {
-    try {
-      return repository.findById(id).map(_user -> {
-        Set<SandboxDataOutput> sandboxes = new HashSet<>();
-        _user.getSandboxes().forEach(_sandbox -> {
-          sandboxes.add(new SandboxDataOutput(_sandbox));
-        });
-          return sandboxes;
-      }).orElseThrow();
-    } catch (NoSuchElementException e) {
-      return new HashSet<>();
-    }
+    return userService.getSandboxes(id);
   }
 }

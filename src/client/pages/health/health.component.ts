@@ -7,6 +7,7 @@ import { UserService } from 'src/client/app/services/user.service';
 import { CookieService } from 'ngx-cookie-service';
 import { FormatDate } from 'src/client/app/Pipes/FormatDate.pipe';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-health',
@@ -18,46 +19,47 @@ import { Router } from '@angular/router';
 export class HealthComponent {
   showModal = false;
   events?: IHealthEvent[];
-  editId?: number;
+
   constructor(
     private healthEventService: HealthEventService,
     private userService: UserService,
     private cookieService: CookieService,
-    private router: Router
+    private router: Router,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     const id = this.cookieService.get('id');
     if(id === ''){
-      this.router.navigate(['login']);
+      this.router.navigate(['/']);
+      return; 
     }
     this.userService.getHealthEvents(id).subscribe(res => {
       this.events = res;
     })
   }
 
-  openModal(id?: number): void {
-    this.editId = id;
-    this.showModal = true;
-  }
-
-  onModalClose(event?: IHealthEvent): void {
-    this.showModal = false;
-    if(!event) {
-      return;
-    }
-    if(this.editId !== undefined){
-      event.id = this.editId;
-      this.healthEventService.put(event).subscribe(() => {
-        this.events = this.events?.filter(evt => evt.id !== this.editId);
-        this.events?.push(event);
-        this.editId = undefined;
-      })
-    } else {
-      this.healthEventService.post(event).subscribe((res) => {
-        this.events?.push(res);
+  openModal(event?: IHealthEvent): void {
+    const ref = this.modalService.open(CreateHealthEventComponent, {centered: true});
+    if(event) {
+      ref.componentInstance.editForm.patchValue({
+        name: event.name,
       });
     }
+    ref.closed.subscribe((_event: IHealthEvent) => {
+      if(event !== undefined){
+        _event.id = event.id;
+        _event.user = {id: this.cookieService.get('id')};
+        this.healthEventService.put(_event).subscribe(() => {
+          this.events = this.events?.filter(evt => evt.id !== event.id);
+          this.events?.push(_event);
+        });
+      } else {
+        this.healthEventService.post(_event).subscribe((res) => {
+          this.events?.push(res);
+        });
+      }
+    });
   }
 
   deleteEvent(event: IHealthEvent) {

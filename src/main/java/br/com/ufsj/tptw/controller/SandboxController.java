@@ -1,8 +1,9 @@
 package br.com.ufsj.tptw.controller;
 
-import br.com.ufsj.tptw.model.sandbox.Sandbox;
-import br.com.ufsj.tptw.model.sandbox.SandboxDataOutput;
-import br.com.ufsj.tptw.model.sandbox.SandboxRepository;
+import br.com.ufsj.tptw.model.Sandbox;
+import br.com.ufsj.tptw.dto.SandboxDataOutput;
+import br.com.ufsj.tptw.repository.SandboxRepository;
+import br.com.ufsj.tptw.service.SandboxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,61 +13,44 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sandbox")
 public class SandboxController {
   @Autowired
   private SandboxRepository sandboxRepository;
-
+  @Autowired
+  private SandboxService sandboxService;
 
   @PostMapping
-  public void create(@RequestBody Sandbox sandbox) {
-    this.sandboxRepository.save(sandbox);
+  public void create(@RequestBody SandboxDataOutput sandbox) {
+    sandboxService.create(sandbox);
   }
 
 
   @GetMapping("/{id}")
   public SandboxDataOutput getOne(@PathVariable Long id) {
-    try {
-      return sandboxRepository.findById(id).map(SandboxDataOutput::new).orElseThrow();
-    } catch (NoSuchElementException exception) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "sandbox not foud", exception);
-    }
+    return sandboxService.getOne(id);
   }
 
   @GetMapping
-  public Set<SandboxDataOutput> get() {
-      return sandboxRepository.findAll().stream().map(SandboxDataOutput::new).collect(Collectors.toSet());
+  public Page<SandboxDataOutput> getAll(@PageableDefault Pageable pageable) {
+    return sandboxService.getAll(pageable);
   }
 
   @PutMapping()
-  public void put(@RequestBody Sandbox sandbox) {
-    try {
-      sandboxRepository.findById(sandbox.getId()).orElseThrow();
-      sandboxRepository.save(sandbox);
-    } catch (NoSuchElementException exception) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id inválido", exception);
-    }
+  public void put(@RequestBody SandboxDataOutput sandboxDTO) {
+      sandboxService.update(sandboxDTO);
   }
 
   @DeleteMapping("/{id}")
   public void delete(@PathVariable Long id){
-    sandboxRepository.deleteById(id);
+    sandboxService.deleteById(id);
   }
 
   @PatchMapping("/{id}/clean")
   public void clean(@PathVariable Long id) {
-    try {
-      Sandbox sandbox = sandboxRepository.findById(id).orElseThrow();
-      sandbox.setCleanDate(new Date());
-      sandboxRepository.save(sandbox);
-    } catch (NoSuchElementException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No sandbox found", e);
-    }
+    sandboxService.clean(id);
   }
 }
